@@ -1,0 +1,38 @@
+{
+    "name": "34ml/laravel-api-tester",
+    "description": "A Laravel package to auto-generate Pest-based tests for API endpoints using JSON schema assertions.",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "_34ml\\ApiTester\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "34ML",
+            "email": "info@34ml.com"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "laravel/framework": "^10.0|^11.0",
+        "pestphp/pest": "^2.0",
+        "ext-json": "*",
+        "swaggest/json-schema": "^0.12.43"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "_34ml\\ApiTester\\ApiTesterServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    }
+}
