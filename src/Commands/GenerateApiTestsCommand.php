@@ -21,20 +21,26 @@ class GenerateApiTestsCommand extends Command
 
         foreach ($routes as $route) {
             $uri = $route['uri'];
+          //  dd('uri: ' . $uri);
             $method = strtoupper($route['method']);
-            $name = str_replace('/', '_', trim($uri, '/'));
+            //$name = str_replace('/', '_', trim($uri, '/'));
 //$name = Str::ucfirst(trim($uri, '/')) . "Test";
+            $name = Str::studly(str_replace(['/', '-', '{', '}'], ' ', trim($uri, '/'))) . 'Test';
+
             $this->info(" Requesting [$method] /$uri");
 //            $user = \App\Models\User::factory()->create();
 //            $token = $user->createToken('test-token')->plainTextToken;
+            $baseUrl = config('app.url'); // Ensure APP_URL in .env is set correctly
+            $fullUrl = rtrim($baseUrl, '/') . '/' . ltrim($uri, '/');
+            $response = Http::get($fullUrl);
 
 //  Add Authorization header
 
-            $response = Http::
+           // $response = Http::
 //            withHeaders([
 //                'Authorization' => 'Bearer ' . $token,
 //            ])->
-            get(url($uri));
+         //   get(url($uri));
             if ($response->failed()) {
                 $this->warn("❌ Failed: $uri");
                 continue;
@@ -57,7 +63,7 @@ class GenerateApiTestsCommand extends Command
             $filePath = $schemaDir . "/{$method}_{$name}.json";
             File::put($filePath, $schema);
 
-            $this->info("✅ Saved schema to $filePath");
+            $this->info(" Saved schema to $filePath");
         }
 
         $this->info("🎉 All done!");

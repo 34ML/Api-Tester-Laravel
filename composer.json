@@ -25,7 +25,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "RouteScanner"
+                "_34ml\\ApiTester\\ApiTesterServiceProvider"
             ]
         }
     },

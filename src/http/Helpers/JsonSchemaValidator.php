@@ -9,6 +9,8 @@ class JsonSchemaValidator
     {
         $schema = json_decode(file_get_contents($schemaPath));
         $validator = new Validator;
+        //If your backend accidentally changes a response
+        // (e.g., removes a price field), the validator will catch it and fail the test.
         $validator->validate($actualResponse, $schema);
 
         if (!$validator->isValid()) {
