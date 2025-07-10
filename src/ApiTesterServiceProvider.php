@@ -1,15 +1,26 @@
 <?php
 namespace _34ml\ApiTester;
 
+use _34ml\ApiTester\Commands\GenerateApiTestsCommand;
 use Illuminate\Support\ServiceProvider;
-use _34ml\ApiTester\Commands\GenerateApiTests;
 
 class ApiTesterServiceProvider extends ServiceProvider
 {
-    public function register()
+    public function register(): void
     {
-        $this->commands([
-            GenerateApiTests::class,
-        ]);
+        $this->mergeConfigFrom(__DIR__ . '/../config/api-tester.php', 'api-tester');
+    }
+
+    public function boot(): void
+    {
+        $this->publishes([
+            __DIR__ . '/../config/api-tester.php' => config_path('api-tester.php'),
+        ], 'config');
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                GenerateApiTestsCommand::class,
+            ]);
+        }
     }
 }

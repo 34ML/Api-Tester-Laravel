@@ -20,11 +20,12 @@
         "pestphp/pest": "^2.0",
         "ext-json": "*",
         "swaggest/json-schema": "^0.12.43"
+
     },
     "extra": {
         "laravel": {
             "providers": [
-                "_34ml\\ApiTester\\ApiTesterServiceProvider"
+                "RouteScanner"
             ]
         }
     },
