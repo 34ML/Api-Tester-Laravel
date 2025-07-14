@@ -1,15 +1,62 @@
 <?php
 namespace _34ml\ApiTester\http\Helpers;
 
-
-use Swaggest\JsonSchema\Schema;
-
 class JsonSchemaGenerator
 {
-    public static function fromResponse(array $responseData): string
+    public static function fromResponse(array|object $data): string
     {
-        $schema = Schema::import($responseData);
-        //It analyzes the JSON array and converts it into a schema file.
-        return json_encode($schema->jsonSerialize(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        if (is_object($data)) {
+            $data = json_decode(json_encode($data), true);
+        }
+
+        $schema = self::generateSchema($data);
+
+        return json_encode($schema, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        //JSON_PRETTY_PRINT → multiline readable format.
+//JSON_UNESCAPED_SLASHES → avoids escaping slashes (e.g. no \/).
+
+
+    }
+
+    protected static function generateSchema($data): array
+    {
+        if (is_array($data)) {
+            if (array_is_list($data)) {
+                $items = count($data) > 0 ? self::generateSchema($data[0]) : ['type' => 'object'];
+
+                return [
+                    'type' => 'array',
+                    'items' => $items,
+                ];
+            }
+
+            $properties = [];
+            foreach ($data as $key => $value) {
+                $properties[$key] = self::generateSchema($value);
+            }
+
+            return [
+                'type' => 'object',
+                'properties' => $properties,
+            ];
+        }
+
+        return ['type' => self::mapType($data)];
+    }
+
+    protected static function mapType($value): string
+    {
+        //match is a PHP 8+ alternative to switch, more concise.
+        //gettype() returns the PHP internal type of a value.
+
+        return match (gettype($value)) {
+            'string'  => 'string',
+            'integer' => 'integer',
+            'double'  => 'number',
+            'boolean' => 'boolean',
+            'array'   => 'array',
+            'object'  => 'object',
+            default   => 'string',
+        };
     }
 }
