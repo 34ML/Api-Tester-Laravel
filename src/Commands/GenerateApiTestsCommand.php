@@ -22,7 +22,6 @@ class GenerateApiTestsCommand extends Command
 
         foreach ($routes as $route) {
             $uri = $route['uri'];
-          //  dd('uri: ' . $uri);
             $method = strtoupper($route['method']);
             //$name = str_replace('/', '_', trim($uri, '/'));
 //$name = Str::ucfirst(trim($uri, '/')) . "Test";
@@ -61,7 +60,11 @@ class GenerateApiTestsCommand extends Command
 if ($response->failed()) {
     $this->warn("❌ Failed: $uri");
     $this->warn("Status: " . $response->status());
-    $this->warn("Body: " . $response->json());
+   // $this->warn("Body: " . $response->json());
+    $this->warn("Body: " . json_encode($response->json(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+    $this->error("❌ Error at [$method] $uri");
+    $this->error("Body: " . json_encode($response->json(), JSON_PRETTY_PRINT));
+
     continue;
 }
 
@@ -117,11 +120,11 @@ $testPath = $testDir . "/{$method}_{$name}.php";
 // If test file already exists, skip
 if (! File::exists($testPath)) {
     $url = '/' . ltrim($uri, '/');
-// $relativeSchemaPath = str_replace(
-//     str_replace('\\', '/', base_path()) . '/',
-//     '',
-//     str_replace('\\', '/', $filePath)
-//);
+ $relativeSchemaPath = str_replace(
+     str_replace('\\', '/', base_path()) . '/',
+     '',
+     str_replace('\\', '/', $filePath)
+);
 
 
     $testContent = <<<EOT
@@ -135,6 +138,7 @@ it('validates {$method} {$url} against JSON schema', function () {
     \$response->assertOk();
 
     \$data = \$response->json('data');
+expect($data)->not->toBeEmpty();
 
 JsonSchemaValidator::assert(\$data, base_path('{$relativeSchemaPath}'));
 });

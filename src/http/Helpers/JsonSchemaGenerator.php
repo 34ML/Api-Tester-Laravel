@@ -31,13 +31,16 @@ class JsonSchemaGenerator
             }
 
             $properties = [];
+$required = [];
             foreach ($data as $key => $value) {
                 $properties[$key] = self::generateSchema($value);
+                $required[] = $key;
             }
 
             return [
                 'type' => 'object',
                 'properties' => $properties,
+                'required' => $required,
             ];
         }
 
