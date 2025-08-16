@@ -1,7 +1,10 @@
 <?php
+
 namespace _34ml\ApiTester;
 
 use _34ml\ApiTester\Commands\GenerateApiTestsCommand;
+use _34ml\ApiTester\Commands\TestApiEndpointCommand;
+use _34ml\ApiTester\Commands\ListApiRoutesCommand;
 use Illuminate\Support\ServiceProvider;
 
 class ApiTesterServiceProvider extends ServiceProvider
@@ -20,6 +23,8 @@ class ApiTesterServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 GenerateApiTestsCommand::class,
+                TestApiEndpointCommand::class,
+                ListApiRoutesCommand::class,
             ]);
         }
     }
