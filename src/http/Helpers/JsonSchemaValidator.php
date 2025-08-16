@@ -38,6 +38,6 @@ class JsonSchemaValidator
         }
 
         // If the schema has more complex validation, we can add it here
-        // For now, this handles the basic case that was failing
+        // For now, this handles the basic case that was failing (nested arrays)
     }
 }
