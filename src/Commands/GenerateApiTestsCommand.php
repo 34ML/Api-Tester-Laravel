@@ -14,7 +14,7 @@ class GenerateApiTestsCommand extends Command
 {
     protected $signature = 'api-tester:generate';
     protected $description = 'Generate JSON schemas from actual API responses 
-    to vlidate it when tests are generated';
+    to validate it when tests are generated';
 
     public function handle()
     {
